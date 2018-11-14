@@ -1,0 +1,22 @@
+{
+  "whitelist": {
+    "sources": [
+      {
+        "name": "BBC",
+        "url": "bbc.com",
+        "info": "The BBC is a verified source."
+      }
+    ],
+    "articles:": []
+  },
+  "blacklist": {
+    "sources": [
+      {
+        "name": "Postcard News",
+        "url": "postcard.news",
+        "info": "Postcard News is a known manufacturer of Fake News. Be very wary of content from this source."
+      }
+    ],
+    "articles": []
+  }
+}

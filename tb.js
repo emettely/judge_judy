@@ -1,6 +1,8 @@
-
+const _ = require('lodash');
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config');
+
+const urlRegex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/;
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, {polling: true});
@@ -18,11 +20,26 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
-// Listen for any kind of message. There are different kinds of
-// messages.
-bot.on('message', (msg) => {
-  const chatId = msg.chat.id;
+bot.on('message', (message) => {
+  const chatId = message.chat.id;
 
-  // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, 'Received your message');
+  const outgoingMessage = messageHandler(message.text);
+
+  console.log(`Sending message: ${outgoingMessage}`);
+  bot.sendMessage(chatId, outgoingMessage);
 });
+
+const verifyUrl = (msg) => {
+  return 'verified!';
+}
+
+const messageHandler = (message) => {
+  let verdict = 'NA';
+
+  if (/http|https|www|.com|.co.uk|.in|/.test(message)) {
+    console.log('url detected');
+    verdict = verifyUrl(message);
+  }
+
+  return verdict;
+}

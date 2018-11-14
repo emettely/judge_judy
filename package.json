@@ -4,10 +4,13 @@
   "description": "",
   "main": "tb.js",
   "dependencies": {
+    "lodash": "^4.17.11",
     "node-telegram-bot-api": "^0.30.0"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node tb.js",
+    "watch": "nodemon tb.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
