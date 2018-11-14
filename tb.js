@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config');
+const fetch = require('fetch');
 
 const urlRegex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/;
 
@@ -20,6 +21,32 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
+bot.on('photo', (img) => {
+    const imgid = img.id;
+    /** criteria from earlier
+     * garish colours
+     * too much text
+     * reverse search images
+     * text that mentions BBC etc. **/
+
+    // do OCR to get text
+    const ocr = ocr(img);
+    const outgoingMessage = messageHandler(ocr.text);
+
+    console.log(`Sending message: ${outgoingMessage}`);
+    bot.sendMessage(imgid, outgoingMessage);
+
+});
+
+bot.on('video', (v) => {
+    const vid = v.id;
+});
+
+bot.on('audio', (a) => {
+    const aid = a.id;
+
+});
+
 bot.on('message', (message) => {
   const chatId = message.chat.id;
 
@@ -27,7 +54,18 @@ bot.on('message', (message) => {
 
   console.log(`Sending message: ${outgoingMessage}`);
   bot.sendMessage(chatId, outgoingMessage);
+
 });
+
+const ocr = (img) => {
+
+    // fetch.fetchUrl("https://vision.googleapis.com/v1/images:annotate", {
+    //
+    // }, (res) => {
+    //
+    // });
+    return {text: "Bengali is the sweetest language said UNESCO"}
+}
 
 const verifyUrl = (msg) => {
   return 'verified!';

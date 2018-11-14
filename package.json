@@ -5,7 +5,8 @@
   "main": "tb.js",
   "dependencies": {
     "lodash": "^4.17.11",
-    "node-telegram-bot-api": "^0.30.0"
+    "node-telegram-bot-api": "^0.30.0",
+    "fetch": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
