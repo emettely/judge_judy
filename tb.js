@@ -4,11 +4,10 @@ const config = require('./config');
 const fetch = require('fetch');
 
 const urlRegex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/;
+const dodgyTerms = ['not fake news', 'very much true', 'harvard', 'rare', 'official sources', 'substantiation with data', 'forwarded with data'];
 
-// Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, {polling: true});
 
-// Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
   // 'match' is the result of executing the regexp above on the text content
@@ -50,8 +49,10 @@ bot.on('audio', (a) => {
 bot.on('message', (message) => {
   const chatId = message.chat.id;
 
-  const outgoingMessage = messageHandler(message.text);
+  const incomingMessage = message.text.toLowerCase();
+  const outgoingMessage = messageHandler(incomingMessage);
 
+  console.log(`Incoming message: ${incomingMessage}`);
   console.log(`Sending message: ${outgoingMessage}`);
   bot.sendMessage(chatId, outgoingMessage);
 
@@ -71,6 +72,17 @@ const verifyUrl = (msg) => {
   return 'verified!';
 }
 
+const checkForDodgyTerms = (message) => {
+  let count = 0;
+  dodgyTerms.forEach((term) => {
+    if (message.indexOf(term) > -1) count++;
+  });
+
+  const verdict = count > 2 ? 'This message looks dodgy' : 'looks okay lol';
+
+  return verdict;
+}
+
 const messageHandler = (message) => {
   let verdict = 'NA';
 
@@ -78,6 +90,8 @@ const messageHandler = (message) => {
     console.log('url detected');
     verdict = verifyUrl(message);
   }
+
+  verdict = checkForDodgyTerms(message);
 
   return verdict;
 }
