@@ -20,7 +20,7 @@ const URL_SOURCE_MESSAGE = {
   verified: 'This source appears trustworthy ✅',
   caution: 'We were unable to verify this source. Please visit fact checking websites to decide to check yourself ⚠️',
   false: 'This source is a known manufacturer of fake news. Do not trust this source 🚨',
-  falseArticle: 'This article has been debunked ‼️'
+  falseArticle: 'It seems you have fallen for a fake story 😕 Be more careful in the future, please? \n\n Here is the proof: '
 };
 
 const ocr = (img) => {
@@ -84,7 +84,7 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
     }
 
     if (unreliable.article) {
-        const msg = `${URL_SOURCE_MESSAGE.falseArticle} Please arm yourself with the proper information: ${unreliable.article_proof}`
+        const msg = `${URL_SOURCE_MESSAGE.falseArticle}${unreliable.article_proof}`
         messageQueue.push(replyMessage(messageId, msg));
     } else if (unreliable.source) {
       messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.false));
@@ -93,6 +93,12 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
     }
 
       return messageQueue;
+}
+
+const forwardedMessageCheck = (message) => {
+  if (message.hasOwnProperty('forward_from')) {
+
+  }
 }
 
 const verify = (message) => {
@@ -105,7 +111,6 @@ const verify = (message) => {
       checkForRedFlags(text),
       verifyUrl(text)
   );
-  
 
   if (messageQueue.length > 0) {
       messageQueue.push(replyMessage(msgId,

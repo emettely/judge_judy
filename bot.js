@@ -52,10 +52,10 @@ bot.on('text', (message) => {
       // .then(bot.sendChatAction(chatId, 'typing'))
       // .then(() => new Promise((resolve) => setTimeout(resolve, 0)))
       .then(() => {
-        if (outgoingMessages[1]) {
-          let ms = outgoingMessages[1];
-          bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
-        }
+        // if (outgoingMessages[1]) {
+        //   let ms = outgoingMessages[1];
+        //   bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
+        // }
       })
   }
 });
