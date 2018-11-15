@@ -42,7 +42,7 @@ bot.on('audio', (a) => {
 });
 
 bot.on('text', (message) => {
-  // console.log(message);
+  console.log(message);
   const chatId = message.chat.id;
   const outgoingMessages = messageHandler.verify(message);
 
@@ -52,10 +52,10 @@ bot.on('text', (message) => {
       // .then(bot.sendChatAction(chatId, 'typing'))
       // .then(() => new Promise((resolve) => setTimeout(resolve, 0)))
       .then(() => {
-        // if (outgoingMessages[1]) {
-        //   let ms = outgoingMessages[1];
-        //   bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
-        // }
+        if (outgoingMessages[1]) {
+          let ms = outgoingMessages[1];
+          bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
+        }
       })
   }
 });

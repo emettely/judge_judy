@@ -1,3 +1,5 @@
+const isUrl = require('is-url');
+
 const database = require('./database');
 
 const RED_FLAGS = [
@@ -35,12 +37,14 @@ const verifyUrl = (message) => {
   }
 
   console.log(message);
-  if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
+  // if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
+  if (isUrl(message)) {
     unreliable.hasUrl = true;
     console.log('URL detected in message');
 
     database.blacklist.articles.forEach((article) => {
       if (message.indexOf(article.url) > -1) {
+        console.log('unreliable article found');
         unreliable.article = true;
         unreliable.article_proof = article.proof;
         unreliable.article_info = article.info;
@@ -49,6 +53,7 @@ const verifyUrl = (message) => {
 
     database.blacklist.sources.forEach((source) => {
       if (message.indexOf(source.url) > -1) {
+        console.log('unreliable source found');
         unreliable.source = true;
         unreliable.source_info = source.info;
       }
@@ -87,7 +92,7 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
     messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
   }
 
-  // console.log(unreliable);
+  console.log(unreliable);
 
   if (unreliable.verified) {
     messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.verified));
@@ -122,11 +127,11 @@ const verify = (message) => {
   );
 
   if (messageQueue.length > 0) {
-    messageQueue.push(replyMessage(msgId,
-      `Hey ${username}, you better check what you're sharing first!`));
-
+    if (messageQueue[0].msg.indexOf('✅') === -1) {
+      messageQueue.push(replyMessage(msgId,
+        `Hey ${username}, you better check what you're sharing first!`));
+      }
     }
-
     // console.log(messageQueue);
 
     return messageQueue;

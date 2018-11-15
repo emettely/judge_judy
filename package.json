@@ -4,9 +4,11 @@
   "description": "",
   "main": "tb.js",
   "dependencies": {
+    "fetch": "^1.1.0",
+    "is-url": "^1.2.4",
+    "isurl": "^1.0.0",
     "lodash": "^4.17.11",
-    "node-telegram-bot-api": "^0.30.0",
-    "fetch": "^1.1.0"
+    "node-telegram-bot-api": "^0.30.0"
   },
   "devDependencies": {},
   "scripts": {

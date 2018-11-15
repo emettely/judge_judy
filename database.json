@@ -49,9 +49,14 @@
     ],
     "articles": [
       {
-        "url": "https://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long/",
+        "url": "http://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long",
         "info": "Alt News has refuted this story. Read more here: ",
         "proof": "https://www.altnews.in/did-jawaharlal-nehru-ever-say-i-am-english-by-education-muslim-by-culture-and-hindu-by-accident/"
+      },
+      {
+        "url": "https://twitter.com/KilaFateh/status/1060523597444333568",
+        "info": "BOOM reported this story false on November 9th. Read more here: ",
+        "proof": "https://www.boomlive.in/video-claiming-pm-modi-mocked-demonetisation-hardship-is-edited/"
       }
     ]
   }
