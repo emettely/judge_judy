@@ -15,8 +15,43 @@
         "name": "Postcard News",
         "url": "postcard.news",
         "info": "Postcard News is a known manufacturer of Fake News. Be very wary of content from this source."
+      },
+      {
+        "name": "India Scoops",
+        "url": "indiascoops.com",
+        "info": "indiascoops.com is a known manufacturer of Fake News. Be very wary of content from this source."
+      },
+      {
+        "name": "BBC News Hub",
+        "url": "bbcnewshub.com",
+        "info": "BBC News Hub is an imposter website and has no affiliation with the BBC. Do not trust this source."
+      },
+      {
+        "name": "BBC News Point",
+        "url": "bbcnewspoint.com",
+        "info": "BBC News Point is an imposter website and has no affiliation with the BBC. Do not trust this source."
+      },
+      {
+        "name": "Fox News Point",
+        "url": "foxnewspoint.com",
+        "info": "Fox News Point is an imposter website and has no affiliation with Fox News. Do not trust this source."
+      },
+      {
+        "name": "Hindutva",
+        "url": "http://hindutva.info/",
+        "info": "Hindutva Info is a known manufacturer of Fake News. Be very wary of content from this source."
+      },
+      {
+        "name": "Dainik Bharat",
+        "url": "https://dbn.news/",
+        "info": "Dainik Bharat is a known manufacturer of Fake News. Be very wary of content from this source."
       }
     ],
-    "articles": []
+    "articles": [
+      {
+        "url": "https://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long/",
+        "proof": "https://www.altnews.in/did-jawaharlal-nehru-ever-say-i-am-english-by-education-muslim-by-culture-and-hindu-by-accident/"
+      }
+    ]
   }
 }
