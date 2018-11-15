@@ -30,31 +30,32 @@ const ocr = (img) => {
 }
 
 const verifyUrl = (message) => {
-  let flaggedSource = false;
-  let flaggedArticle = false;
-  let flaggedArticleProof = '';
-  if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
-    console.log('URL detected in message');
-
-    database.blacklist.articles.forEach((article) => {
-      if (message.indexOf(article.url) > -1) {
-        flaggedArticle = true;
-        flaggedArticleProof = article.proof;
-      }
-    });
-
-    database.blacklist.sources.forEach((source) => {
-      if (message.indexOf(source.url) > -1) flaggedSource = true;
-    });
-
-    if (flaggedArticle) return `${URL_SOURCE_MESSAGE.falseArticle} Please arm yourself with the proper information: ${flaggedArticleProof}`;
-    else if (flaggedSource) return URL_SOURCE_MESSAGE.false;
-    else return URL_SOURCE_MESSAGE.caution;
-
-    return flaggedSource ? URL_SOURCE_MESSAGE.false : URL_SOURCE_MESSAGE.caution;
-  } else {
-    return null;
+  let unreliable = {
+    source: null,
+    article: null,
+    article_proof: null
   }
+
+  // let flaggedSource = false;
+  // let flaggedArticle = false;
+
+  if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
+      console.log('URL detected in message');
+
+      database.blacklist.articles.forEach((article) => {
+          if (message.indexOf(article.url) > -1) {
+              unreliable.article = true;
+              unreliable.article_proof = article.proof;
+          }
+      });
+
+      database.blacklist.sources.forEach((source) => {
+          if (message.indexOf(source.url) > -1) {
+              unreliable.source = true;
+          }
+      });
+  }
+    return unreliable
 }
 
 const checkForRedFlags = (message) => {
@@ -64,7 +65,34 @@ const checkForRedFlags = (message) => {
     if (message.indexOf(term) > -1) count++;
   });
 
-  return count > RED_FLAG_THRESHOLD ? RED_FLAG_MESSAGE.false : null;
+  return count > RED_FLAG_THRESHOLD;
+};
+
+const replyMessage = (messageId, text) => {
+    return {
+        msgId: messageId,
+        msg: text
+    }
+};
+
+
+const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
+    let messageQueue = [];
+
+    if (redFlagged) {
+      messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
+    }
+
+    if (unreliable.article) {
+        const msg = `${URL_SOURCE_MESSAGE.falseArticle} Please arm yourself with the proper information: ${unreliable.article_proof}`
+        messageQueue.push(replyMessage(messageId, msg));
+    } else if (unreliable.source) {
+      messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.false));
+    } else {
+        messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
+    }
+
+      return messageQueue;
 }
 
 const verify = (message) => {
@@ -72,24 +100,22 @@ const verify = (message) => {
   const text = message.text.toLowerCase();
   const msgId = message.message_id;
 
-  const messageQueue = [];
+  const messageQueue = getCautionaryMessages(
+      msgId,
+      checkForRedFlags(text),
+      verifyUrl(text)
+  );
+  
 
-  messageQueue.push(checkForRedFlags(text));
-  messageQueue.push(verifyUrl(text));
-
-  // removes the null elements from the above checks
-  messageQueueFiltered = messageQueue.filter(Boolean);
-  if (messageQueueFiltered.length > 0) {
-      messageQueueFiltered.push({
-          msgId: msgId,
-          msg: `Hey ${username}, you better check what you're sharing first!`
-      });
+  if (messageQueue.length > 0) {
+      messageQueue.push(replyMessage(msgId,
+          `Hey ${username}, you better check what you're sharing first!`));
 
   }
-  console.log(messageQueueFiltered)
+  console.log(messageQueue);
 
-  return messageQueueFiltered;
-}
+  return messageQueue;
+};
 
 module.exports = {
   ocr,
