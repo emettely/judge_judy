@@ -24,7 +24,7 @@ bot.on('photo', (img) => {
      * reverse search images
      * text that mentions BBC etc. **/
 
-    // do OCR to get text
+    // do OCR one day
     const ocr = messageHandler.ocr(img);
     const outgoingMessage = messageHandler(ocr.text);
 

@@ -1,5 +1,3 @@
-const fetch = require('fetch');
-
 const database = require('./database');
 
 const RED_FLAGS = [
