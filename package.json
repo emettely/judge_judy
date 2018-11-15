@@ -10,8 +10,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node tb.js",
-    "watch": "nodemon tb.js",
+    "start": "node index.js",
+    "watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
