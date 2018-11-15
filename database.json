@@ -23,12 +23,12 @@
       },
       {
         "name": "BBC News Hub",
-        "url": "bbcnewshub.com",
+        "url":  "bbcnewshub.com",
         "info": "BBC News Hub is an imposter website and has no affiliation with the BBC. Do not trust this source."
       },
       {
         "name": "BBC News Point",
-        "url": "bbcnewspoint.com",
+        "url":  "bbcnewspoint.com",
         "info": "BBC News Point is an imposter website and has no affiliation with the BBC. Do not trust this source."
       },
       {
@@ -39,18 +39,24 @@
       {
         "name": "Hindutva",
         "url": "http://hindutva.info/",
-        "info": "Hindutva Info is a known manufacturer of Fake News. Be very wary of content from this source."
+        "info": "Hindutva Info is not a reliable news source. Be very wary of content from here."
       },
       {
         "name": "Dainik Bharat",
         "url": "https://dbn.news/",
-        "info": "Dainik Bharat is a known manufacturer of Fake News. Be very wary of content from this source."
+        "info": "Dainik Bharat is not a reliable news source. Be very wary of content from here."
       }
     ],
     "articles": [
       {
-        "url": "https://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long/",
+        "url": "http://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long",
+        "info": "Alt News has refuted this story. Read more here: ",
         "proof": "https://www.altnews.in/did-jawaharlal-nehru-ever-say-i-am-english-by-education-muslim-by-culture-and-hindu-by-accident/"
+      },
+      {
+        "url": "https://twitter.com/KilaFateh/status/1060523597444333568",
+        "info": "BOOM reported this story false on November 9th. Read more here: ",
+        "proof": "https://www.boomlive.in/video-claiming-pm-modi-mocked-demonetisation-hardship-is-edited/"
       }
     ]
   }

@@ -1,3 +1,5 @@
+const isUrl = require('is-url');
+
 const database = require('./database');
 const updateTally = require('./tally');
 
@@ -21,42 +23,50 @@ const URL_SOURCE_MESSAGE = {
   verified: 'This source appears trustworthy ✅',
   caution: 'We were unable to verify this source. Please visit fact checking websites to decide to check yourself ⚠️',
   false: 'This source is a known manufacturer of fake news. Do not trust this source 🚨',
-  falseArticle: 'This article has been debunked ‼️'
+  falseArticle: 'It seems you have fallen for a fake story 😕 \n\n'
 };
-
-const ocr = (img) => {
-    return {
-      text: "Bengali is the sweetest language said UNESCO"
-    };
-}
 
 const verifyUrl = (message) => {
   let unreliable = {
     source: null,
+    source_info: null,
     article: null,
-    article_proof: null
+    article_proof: null,
+    article_info: null,
+    verified: false,
+    hasUrl: null
   }
 
-  // let flaggedSource = false;
-  // let flaggedArticle = false;
+  console.log(message);
+  // if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
+  if (isUrl(message)) {
+    unreliable.hasUrl = true;
+    console.log('URL detected in message');
 
-  if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
-      console.log('URL detected in message');
+    database.blacklist.articles.forEach((article) => {
+      if (message.indexOf(article.url) > -1) {
+        console.log('unreliable article found');
+        unreliable.article = true;
+        unreliable.article_proof = article.proof;
+        unreliable.article_info = article.info;
+      }
+    });
 
-      database.blacklist.articles.forEach((article) => {
-          if (message.indexOf(article.url) > -1) {
-              unreliable.article = true;
-              unreliable.article_proof = article.proof;
-          }
-      });
+    database.blacklist.sources.forEach((source) => {
+      if (message.indexOf(source.url) > -1) {
+        console.log('unreliable source found');
+        unreliable.source = true;
+        unreliable.source_info = source.info;
+      }
+    });
 
-      database.blacklist.sources.forEach((source) => {
-          if (message.indexOf(source.url) > -1) {
-              unreliable.source = true;
-          }
-      });
+    database.whitelist.sources.forEach((source) => {
+      if (message.indexOf(source.url) > -1) {
+        unreliable.verified = true;
+      }
+    });
   }
-    return unreliable
+  return unreliable;
 }
 
 const checkForRedFlags = (message) => {
@@ -70,29 +80,40 @@ const checkForRedFlags = (message) => {
 };
 
 const replyMessage = (messageId, text) => {
-    return {
-        msgId: messageId,
-        msg: text
-    }
+  return {
+    msgId: messageId,
+    msg: text
+  }
 };
 
-
 const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
-    let messageQueue = [];
+  let messageQueue = [];
 
-    if (redFlagged) {
-      messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
-    }
+  if (redFlagged) {
+    messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
+  }
 
-    if (unreliable.article) {
-        const msg = `${URL_SOURCE_MESSAGE.falseArticle} Please arm yourself with the proper information: ${unreliable.article_proof}`
-        messageQueue.push(replyMessage(messageId, msg));
-    } else if (unreliable.source) {
-      messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.false));
-    } else {
-        messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
-    }
-      return messageQueue;
+  console.log(unreliable);
+
+  if (unreliable.article) {
+    messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.verified));
+  } else if (unreliable.article) {
+    const msg = `${URL_SOURCE_MESSAGE.falseArticle}${unreliable.article_info}${unreliable.article_proof}`
+    messageQueue.push(replyMessage(messageId, msg));
+  } else if (unreliable.source_info) {
+    const reason = unreliable.info || URL_SOURCE_MESSAGE.false;
+    messageQueue.push(replyMessage(messageId, `${reason}🚨`));
+  } else if (unreliable.hasUrl) {
+    messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
+  }
+
+  return messageQueue;
+}
+
+const forwardedMessageCheck = (message) => {
+  if (message.hasOwnProperty('forward_from')) {
+
+  }
 }
 
 const verify = (message) => {
@@ -126,17 +147,18 @@ const verify = (message) => {
         messageQueue.push(replyMessage(msgId, gameMessage))
     }
 
+
   if (messageQueue.length > 0) {
+    if (messageQueue[0].msg.indexOf('✅') === -1) {
       messageQueue.push(replyMessage(msgId,
-          `Hey ${username}, you better check what you're sharing first!`));
+        `Hey ${username}, you better check what you're sharing first!`));
+      }
+    }
+    // console.log(messageQueue);
 
-  }
-  console.log(messageQueue);
+    return messageQueue;
+  };
 
-  return messageQueue;
-};
-
-module.exports = {
-  ocr,
-  verify
-};
+  module.exports = {
+    verify
+  };
