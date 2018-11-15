@@ -20,7 +20,7 @@ const URL_SOURCE_MESSAGE = {
   verified: 'This source appears trustworthy ✅',
   caution: 'We were unable to verify this source. Please visit fact checking websites to decide to check yourself ⚠️',
   false: 'This source is a known manufacturer of fake news. Do not trust this source 🚨',
-  falseArticle: 'It seems you have fallen for a fake story 😕 Be more careful in the future, please? \n\n Here is the proof: '
+  falseArticle: 'It seems you have fallen for a fake story 😕 \n\n'
 };
 
 const ocr = (img) => {
@@ -33,11 +33,10 @@ const verifyUrl = (message) => {
   let unreliable = {
     source: null,
     article: null,
-    article_proof: null
+    article_proof: null,
+    info: null,
+    verified: false
   }
-
-  // let flaggedSource = false;
-  // let flaggedArticle = false;
 
   if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
       console.log('URL detected in message');
@@ -46,16 +45,24 @@ const verifyUrl = (message) => {
           if (message.indexOf(article.url) > -1) {
               unreliable.article = true;
               unreliable.article_proof = article.proof;
+              unreliable.info = article.info;
           }
       });
 
       database.blacklist.sources.forEach((source) => {
           if (message.indexOf(source.url) > -1) {
               unreliable.source = true;
+              unreliable.info = source.info;
+          }
+      });
+
+      database.whitelist.sources.forEach((source) => {
+          if (message.indexOf(source.url) > -1) {
+              unreliable.verified = true;
           }
       });
   }
-    return unreliable
+    return unreliable;
 }
 
 const checkForRedFlags = (message) => {
@@ -75,24 +82,27 @@ const replyMessage = (messageId, text) => {
     }
 };
 
-
 const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
-    let messageQueue = [];
+  let messageQueue = [];
 
-    if (redFlagged) {
-      messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
-    }
+  if (redFlagged) {
+    messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
+  }
 
-    if (unreliable.article) {
-        const msg = `${URL_SOURCE_MESSAGE.falseArticle}${unreliable.article_proof}`
-        messageQueue.push(replyMessage(messageId, msg));
-    } else if (unreliable.source) {
-      messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.false));
-    } else {
-        messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
-    }
+  if (unreliable.verified) {
+    messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.verified));
+  } else if (unreliable.article) {
+    const msg = `${URL_SOURCE_MESSAGE.falseArticle}${unreliable.info}${unreliable.article_proof}`
+    messageQueue.push(replyMessage(messageId, msg));
+  } else if (unreliable.source) {
+    console.log(unreliable)
+    const reason = unreliable.info || URL_SOURCE_MESSAGE.false;
+    messageQueue.push(replyMessage(messageId, `${reason}🚨`));
+  } else {
+    messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
+  }
 
-      return messageQueue;
+  return messageQueue;
 }
 
 const forwardedMessageCheck = (message) => {

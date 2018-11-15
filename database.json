@@ -23,12 +23,12 @@
       },
       {
         "name": "BBC News Hub",
-        "url": "bbcnewshub.com",
+        "url":  "bbcnewshub.com",
         "info": "BBC News Hub is an imposter website and has no affiliation with the BBC. Do not trust this source."
       },
       {
         "name": "BBC News Point",
-        "url": "bbcnewspoint.com",
+        "url":  "bbcnewspoint.com",
         "info": "BBC News Point is an imposter website and has no affiliation with the BBC. Do not trust this source."
       },
       {
@@ -50,6 +50,7 @@
     "articles": [
       {
         "url": "https://postcard.news/english-education-muslim-culture-just-born-hindu-accident-said-jawaharlal-nehru-voted-dynasty-long/",
+        "info": "Alt News has refuted this story. Read more here: ",
         "proof": "https://www.altnews.in/did-jawaharlal-nehru-ever-say-i-am-english-by-education-muslim-by-culture-and-hindu-by-accident/"
       }
     ]
