@@ -30,10 +30,13 @@ const verifyUrl = (message) => {
     article: null,
     article_proof: null,
     article_info: null,
-    verified: false
+    verified: false,
+    hasUrl: null
   }
 
+  console.log(message);
   if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
+    unreliable.hasUrl = true;
     console.log('URL detected in message');
 
     database.blacklist.articles.forEach((article) => {
@@ -84,7 +87,7 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
     messageQueue.push(replyMessage(messageId, RED_FLAG_MESSAGE.false))
   }
 
-  console.log(unreliable);
+  // console.log(unreliable);
 
   if (unreliable.verified) {
     messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.verified));
@@ -94,7 +97,7 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
   } else if (unreliable.source_info) {
     const reason = unreliable.info || URL_SOURCE_MESSAGE.false;
     messageQueue.push(replyMessage(messageId, `${reason}🚨`));
-  } else {
+  } else if (unreliable.hasUrl) {
     messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
   }
 
@@ -123,7 +126,8 @@ const verify = (message) => {
       `Hey ${username}, you better check what you're sharing first!`));
 
     }
-    console.log(messageQueue);
+
+    // console.log(messageQueue);
 
     return messageQueue;
   };

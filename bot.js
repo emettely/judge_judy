@@ -42,7 +42,7 @@ bot.on('audio', (a) => {
 });
 
 bot.on('text', (message) => {
-  console.log(message);
+  // console.log(message);
   const chatId = message.chat.id;
   const outgoingMessages = messageHandler.verify(message);
 
