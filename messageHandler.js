@@ -1,5 +1,3 @@
-const fetch = require('fetch');
-
 const database = require('./database');
 
 const RED_FLAGS = ['not fake news', 'very much true', 'harvard', 'america', 'rare', 'official sources', 'substantiation with data', 'forwarded with data'];
