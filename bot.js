@@ -42,17 +42,19 @@ bot.on('audio', (a) => {
 });
 
 bot.on('text', (message) => {
-  console.log(message);
-
   const chatId = message.chat.id;
+  const outgoingMessages = messageHandler.verify(message);
 
-  const incomingMessage = message.text.toLowerCase();
-  const outgoingMessage = messageHandler.verify(incomingMessage);
-
-  console.log(`Incoming message: ${incomingMessage}`);
-  console.log(`Sending message: ${outgoingMessage}`);
-  bot.sendMessage(chatId, outgoingMessage);
-
+  if (outgoingMessages. length > 0) {
+    bot.sendMessage(chatId, outgoingMessages[0])
+      // .then(bot.sendChatAction(chatId, 'typing'))
+      // .then(() => new Promise((resolve) => setTimeout(resolve, 0)))
+      .then(() => {
+        if (outgoingMessages[1]) {
+          bot.sendMessage(chatId, outgoingMessages[1])
+        }
+      })
+  }
 });
 
 module.exports = bot;
