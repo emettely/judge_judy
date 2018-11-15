@@ -1,4 +1,5 @@
 const database = require('./database');
+const updateTally = require('./tally');
 
 const RED_FLAGS = [
   'not fake news',
@@ -91,7 +92,6 @@ const getCautionaryMessages = (messageId, redFlagged, unreliable) => {
     } else {
         messageQueue.push(replyMessage(messageId, URL_SOURCE_MESSAGE.caution));
     }
-
       return messageQueue;
 }
 
@@ -100,12 +100,31 @@ const verify = (message) => {
   const text = message.text.toLowerCase();
   const msgId = message.message_id;
 
+  const hasRedFlags = checkForRedFlags(text);
+  const unreliableUrl = verifyUrl(text);
+
   const messageQueue = getCautionaryMessages(
       msgId,
-      checkForRedFlags(text),
-      verifyUrl(text)
+      hasRedFlags,
+      unreliableUrl
   );
-  
+
+    let tally;
+
+    if (messageQueue.length === 0) {
+        tally = 1
+    } else if (unreliableUrl.source === null && unreliableUrl.article === null) {
+        tally = 0;
+    } else {
+        tally = -1;
+    }
+    
+
+    let gameMessage = updateTally(message.chat.id, message.from.id, tally);
+
+    if (gameMessage) {
+        messageQueue.push(replyMessage(msgId, gameMessage))
+    }
 
   if (messageQueue.length > 0) {
       messageQueue.push(replyMessage(msgId,
