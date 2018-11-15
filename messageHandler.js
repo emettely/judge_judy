@@ -10,7 +10,7 @@ const RED_FLAGS = [
   'rare',
   'official sources',
   'substantiation with data',
-  'forwarded with data'
+  'forwarded as received'
 ];
 
 const RED_FLAG_THRESHOLD = 1;
@@ -20,8 +20,9 @@ const RED_FLAG_MESSAGE = {
 
 const URL_SOURCE_MESSAGE = {
   verified: 'This source appears trustworthy ✅',
-  caution: 'We were unable to verify this source. Proceed with caution ⚠️',
-  false: 'This source is a known manufacturer of fake news. Do not trust this source 🚨'
+  caution: 'We were unable to verify this source. Please visit fact checking websites to decide to check yourself ⚠️',
+  false: 'This source is a known manufacturer of fake news. Do not trust this source 🚨',
+  falseArticle: 'This article has been debunked ‼️'
 };
 
 const ocr = (img) => {
@@ -31,15 +32,25 @@ const ocr = (img) => {
 }
 
 const verifyUrl = (message) => {
-  let flagged = false;
-  if (/http|https|www|.com|.co.uk|.in|.news/.test(message)) {
+  let flaggedSource = false;
+  let flaggedArticle = false;
+
+  if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
     console.log('URL detected in message');
 
     database.blacklist.sources.forEach((source) => {
-      if (message.indexOf(source.url) > -1) flagged = true;
+      if (message.indexOf(source.url) > -1) flaggedSource = true;
     });
 
-    return flagged ? URL_SOURCE_MESSAGE.false : URL_SOURCE_MESSAGE.caution;
+    database.blacklist.articles.forEach((article) => {
+      if (message.indexOf(article.url) > -1) flaggedArticle = true;
+    });
+
+    if (flaggedArticle) return URL_SOURCE_MESSAGE.falseArticle;
+    else if (flaggedSource) return URL_SOURCE_MESSAGE.false;
+    else return URL_SOURCE_MESSAGE.caution;
+
+    return flaggedSource ? URL_SOURCE_MESSAGE.false : URL_SOURCE_MESSAGE.caution;
   } else {
     return null;
   }
