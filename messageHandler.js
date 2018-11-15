@@ -70,6 +70,7 @@ const checkForRedFlags = (message) => {
 const verify = (message) => {
   const username = message.from.first_name;
   const text = message.text.toLowerCase();
+  const msgId = message.message_id;
 
   const messageQueue = [];
 
@@ -79,7 +80,11 @@ const verify = (message) => {
   // removes the null elements from the above checks
   messageQueueFiltered = messageQueue.filter(Boolean);
   if (messageQueueFiltered.length > 0) {
-    messageQueueFiltered.push(`Hey ${username}, you better check what you're sharing first!`);
+      messageQueueFiltered.push({
+          msgId: msgId,
+          msg: `Hey ${username}, you better check what you're sharing first!`
+      });
+
   }
   console.log(messageQueueFiltered)
 

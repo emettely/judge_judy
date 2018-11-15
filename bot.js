@@ -46,13 +46,15 @@ bot.on('text', (message) => {
   const chatId = message.chat.id;
   const outgoingMessages = messageHandler.verify(message);
 
-  if (outgoingMessages. length > 0) {
-    bot.sendMessage(chatId, outgoingMessages[0])
+  if (outgoingMessages.length > 0) {
+    let ms = outgoingMessages[0];
+    bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
       // .then(bot.sendChatAction(chatId, 'typing'))
       // .then(() => new Promise((resolve) => setTimeout(resolve, 0)))
       .then(() => {
         if (outgoingMessages[1]) {
-          bot.sendMessage(chatId, outgoingMessages[1])
+          let ms = outgoingMessages[1];
+          bot.sendMessage(chatId, ms.msg, {reply_to_message_id: ms.msgId})
         }
       })
   }
