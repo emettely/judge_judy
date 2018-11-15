@@ -59,18 +59,17 @@ bot.on('message', (message) => {
 });
 
 const ocr = (img) => {
+    /**
+     * Use an API of sorts, for-example: google vision API
+     * fetch.fetchUrl("https://vision.googleapis.com/v1/images:annotate", {}, (res) => {});
+     */
 
-    // fetch.fetchUrl("https://vision.googleapis.com/v1/images:annotate", {
-    //
-    // }, (res) => {
-    //
-    // });
     return {text: "Bengali is the sweetest language said UNESCO"}
-}
+};
 
 const verifyUrl = (msg) => {
   return 'verified!';
-}
+};
 
 const checkForDodgyTerms = (message) => {
   let count = 0;
@@ -81,7 +80,7 @@ const checkForDodgyTerms = (message) => {
   const verdict = count > 2 ? 'This message looks dodgy' : 'looks okay lol';
 
   return verdict;
-}
+};
 
 const messageHandler = (message) => {
   let verdict = 'NA';
@@ -94,4 +93,4 @@ const messageHandler = (message) => {
   verdict = checkForDodgyTerms(message);
 
   return verdict;
-}
+};
