@@ -32,19 +32,22 @@ const ocr = (img) => {
 const verifyUrl = (message) => {
   let flaggedSource = false;
   let flaggedArticle = false;
-
+  let flaggedArticleProof = '';
   if (/http|https|www|.com|.co.uk|.in|.news|.info/.test(message)) {
     console.log('URL detected in message');
+
+    database.blacklist.articles.forEach((article) => {
+      if (message.indexOf(article.url) > -1) {
+        flaggedArticle = true;
+        flaggedArticleProof = article.proof;
+      }
+    });
 
     database.blacklist.sources.forEach((source) => {
       if (message.indexOf(source.url) > -1) flaggedSource = true;
     });
 
-    database.blacklist.articles.forEach((article) => {
-      if (message.indexOf(article.url) > -1) flaggedArticle = true;
-    });
-
-    if (flaggedArticle) return URL_SOURCE_MESSAGE.falseArticle;
+    if (flaggedArticle) return `${URL_SOURCE_MESSAGE.falseArticle} Please arm yourself with the proper information: ${flaggedArticleProof}`;
     else if (flaggedSource) return URL_SOURCE_MESSAGE.false;
     else return URL_SOURCE_MESSAGE.caution;
 
